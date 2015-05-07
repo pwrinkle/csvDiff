@@ -47,10 +47,11 @@ namespace csvDifferences
                     List<string> row = a.rows.ElementAt(h);
                     List<string> cellsStart = new List<string>();
                     string grouping = row.ElementAt<string>(this.colIndexToGroupBy);
-                    this.colIndexToCompare.ForEach(delegate(int i)
+                    for (int k = 0; k < this.colIndexToCompare.Count; k++)
                     {
-                        cellsStart.Add(row.ElementAt<string>(i));
-                    });
+                        cellsStart.Add(row.ElementAt<string>(k).ToLower());
+                    }
+                    string[] compareA = cellsStart.ToArray<string>();
                     bool matched = false;
                     for (int i = 0; i < b.rows.Count; i++)
                     {
@@ -58,11 +59,10 @@ namespace csvDifferences
                         List<string> rowB = b.rows.ElementAt(i);
                         for (int j = 0; j < this.colIndexToCompare.Count; j++)
                         {
-                            cellsEnd.Add(rowB.ElementAt<string>(j));
+                            cellsEnd.Add(rowB.ElementAt<string>(j).ToLower());
                         }
-                        List<string> afterCompareA = cellsStart.Except<string>(cellsEnd).ToList<string>();
-                        List<string> afterCompareB = cellsEnd.Except<string>(cellsStart).ToList<string>();
-                        if (afterCompareA.Count == 0 && afterCompareB.Count == 0)
+                        string[] compareB = cellsEnd.ToArray<string>();
+                        if (compareA.SequenceEqual(compareB))
                         {
                             matched = true;
                             this.indexesMatched.Add(h);
